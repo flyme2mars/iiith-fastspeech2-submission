@@ -1,36 +1,10 @@
 # FastSpeech 2 for English and Telugu
 
-IIIT-H Speech Processing Lab take-home. Deadline: **Saturday 7 November 2026, midnight IST** (the PDF date is 07-11-2026).
-
-Train **two separate** FastSpeech 2 models, synthesize the test sentences in the PDF, and submit the public GitHub URL through the course Google Form.
+IIIT-H Speech Processing Lab. Two separate FastSpeech 2 models, for English and Telugu, with the test sentences from the assignment PDF synthesized.
 
 The reference implementation is [ming024/FastSpeech2](https://github.com/ming024/FastSpeech2) at commit `d4e79eb` (the link in the assignment). The paper is [FastSpeech 2](https://arxiv.org/abs/2006.04558). What changed, including Telugu, is written in [`third_party/FastSpeech2/MODIFICATIONS.md`](third_party/FastSpeech2/MODIFICATIONS.md).
 
 English and Telugu loss curves, test wavs, phone strings, and variance-adaptor plots are in `Results/English/` and `Results/Telugu/`. The technical report is [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf). Checkpoint files stay gitignored. The step 10000 English weight and the step 20000 Telugu weight are linked in [Checkpoints](#checkpoints).
-
-## Submission checklist
-
-Items the assignment PDF asks for. A checked item is either in the repo or linked below. The Google Form is still open.
-
-- [x] `README.md`
-- [x] `requirements.txt` (and `requirements-kaggle.txt`, which does not reinstall Kaggle's CUDA torch)
-- [x] `English/train.py`, `English/preprocess.py`, `English/inference.py`, `English/config.yaml`
-- [x] `Telugu/train.py`, `Telugu/preprocess.py`, `Telugu/inference.py`, `Telugu/config.yaml`
-- [x] Vendored ming024 source under `third_party/FastSpeech2/` plus the modifications documented above
-- [x] Separate English and Telugu configs (`configs/english.yaml`, `configs/telugu.yaml`; the `English/` and `Telugu/` `config.yaml` files are symlinks)
-- [x] Folder layout from the PDF (`Results/.../variance_adaptor_plots/{duration,pitch,energy}`, `Report/`, checkpoints directories)
-- [x] Test sentences copied exactly, including the doubled spaces (`data/test_sentences/`)
-- [x] `English/checkpoints/` and `Telugu/checkpoints/` trained weights (`*.pth.tar`). Directories exist. The files are gitignored. Direct links are in [Checkpoints](#checkpoints): `en/10000.pth.tar` and `te/20000.pth.tar`.
-- [x] `Results/English/training_loss.png` and `Results/English/validation_loss.png`
-- [x] `Results/Telugu/training_loss.png` and `Results/Telugu/validation_loss.png`
-- [x] `Results/English/test_generated_audios/` for E1, E2a, E2b, E3, E4
-- [x] `Results/Telugu/test_generated_audios/` for T1, T2a, T2b, T3, T4
-- [x] English variance-adaptor plots (duration, pitch / F0, energy) for E1, E2a, E2b, E3, E4
-- [x] Telugu variance-adaptor plots (duration, pitch / F0, energy) for T1, T2a, T2b, T3, T4
-- [x] `Report/Technical_Report.pdf` (source: `Report/Technical_Report.md`)
-- [ ] Public GitHub URL submitted through the course Google Form
-
-The PDF counts five test sentences per language. E2 and T2 are each two sentences, (a) and (b).
 
 ## How to run this
 
@@ -73,7 +47,7 @@ If the session dies, start the notebook again. `scripts/train.py` resumes from t
 
 Pitch (pyworld) and the normalized energy arrays are float64 on disk. The loader and the loss cast them to float32 before `backward`. A CUDA run that still has the old code stops at step 1 with `Found dtype Double but expected Float`. No checkpoint is written in that case. After this fix is on `main`, re-run the English notebook from the train cell (the default `restore_step` is 0). Leave `preprocessed_data/english` in place so download and alignment are not repeated. The Kaggle setup cell checks out `main`.
 
-The `Results/` tree and `Report/Technical_Report.pdf` are already committed. Checkpoint files are not. Use the links in [Checkpoints](#checkpoints). Then submit the public GitHub URL through the course Google Form.
+The `Results/` tree and `Report/Technical_Report.pdf` are already committed. Checkpoint files are not. Use the links in [Checkpoints](#checkpoints).
 
 ### Local commands
 
@@ -134,10 +108,10 @@ Results/Telugu/            # loss pngs, test wavs, phone strings, OOV log, varia
 logs/english_svarah/       # Kaggle split_stats and train/val loss logs
 logs/telugu_indictts/      # Kaggle split_stats, align_report, train/val loss logs
 Report/                    # Technical_Report.md and Technical_Report.pdf
-samples/ plots/ checkpoints/   # pointers only; do not put the submission files here
+samples/ plots/ checkpoints/   # pointers only
 ```
 
-`samples/`, `plots/`, and `checkpoints/` are not a second copy of the results. The PDF paths are the ones that get graded.
+`samples/`, `plots/`, and `checkpoints/` are not a second copy of the results.
 
 ## Data selection
 
@@ -214,7 +188,7 @@ The strings in `data/test_sentences/` match the PDF, including internal doubled 
 
 ## Checkpoints
 
-Checkpoints and the HiFi-GAN zip are gitignored. The two weights for this submission are on Hugging Face:
+Checkpoints and the HiFi-GAN zip are gitignored. The two weights are on Hugging Face:
 
 https://huggingface.co/akshaikrishna/fastspeech2-svarah-indictts
 
@@ -222,5 +196,3 @@ https://huggingface.co/akshaikrishna/fastspeech2-svarah-indictts
 - Telugu, step 20000: https://huggingface.co/akshaikrishna/fastspeech2-svarah-indictts/resolve/main/te/20000.pth.tar
 
 The technical report PDF is [`Report/Technical_Report.pdf`](Report/Technical_Report.pdf). The Markdown source is [`Report/Technical_Report.md`](Report/Technical_Report.md).
-
-The links have to stay up while the assignment is graded.
