@@ -1,0 +1,55 @@
+{
+  "seed": 42,
+  "target_train_seconds": 18000.0,
+  "target_val_seconds": 3600.0,
+  "train_seconds": 18005.821255351748,
+  "val_seconds": 3600.58157555207,
+  "train_utterances": 2020,
+  "val_utterances": 417,
+  "speakers_kept": [
+    "female",
+    "male"
+  ],
+  "speakers_dropped_short": [],
+  "train_seconds_by_speaker": {
+    "female": 9850.430212469448,
+    "male": 8155.391042882287
+  },
+  "val_seconds_by_speaker": {
+    "female": 1924.7507338020241,
+    "male": 1675.8308417500473
+  },
+  "recommended_speaker": "female",
+  "val_backfilled": false,
+  "reached_target": true,
+  "dataset": "SPRINGLab/IndicTTS_Telugu",
+  "split_name_on_hub": "train",
+  "note": "IndicTTS Telugu on the hub is one split of both speakers (female about 4.27 h, male about 4.47 h, 48 kHz). Neither speaker alone has 5 hours, so train and validation both contain female and male. The hub 'train' split is not used as the training set; membership is in this manifest.",
+  "selection": {
+    "train_hours": 5.0,
+    "val_hours": 1.0,
+    "min_utt_sec": 1.0,
+    "max_utt_sec": 12.0,
+    "min_speaker_sec": 30.0,
+    "seed": 42,
+    "candidates": 14719,
+    "indexed_clips": 8576,
+    "indexed_hours": 36.712271359953824,
+    "clips_without_usable_slice": 13,
+    "chunk_hours": 36.64403096557067
+  },
+  "chunking_note": "Clips longer than max_utt_sec are split on orthographic syllables. Audio time is proportional to characters. A slice is dropped when its transcript is longer than the wav2vec2/MMS CTC frame budget (the failure mode log_probs 140 vs targets 239). Female hub clips are often 16 kHz paragraphs; male clips are often 48 kHz. split_stats train_hours_written and val_hours_written are the real durations. If reached_target is false, do not describe the subset as 5 h / 1 h.",
+  "written_utterances": 2437,
+  "skipped_silent": 0,
+  "train_seconds_written": 18005.8662585034,
+  "val_seconds_written": 3600.5904308390022,
+  "train_hours_written": 5.0016295162509445,
+  "val_hours_written": 1.0001640085663894,
+  "source_sampling_rates": {
+    "16000": 1219,
+    "48000": 1218
+  },
+  "target_sampling_rate": 22050,
+  "manifest": "/kaggle/working/iiith-fastspeech2-assignment/data/telugu/manifest.jsonl",
+  "raw_root": "/kaggle/working/iiith-fastspeech2-assignment/raw_data/telugu"
+}

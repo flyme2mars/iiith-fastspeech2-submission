@@ -1,0 +1,54 @@
+{
+  "lang": "telugu",
+  "aligner": "ctc",
+  "model": "facebook/mms-1b-fl102",
+  "attempted": 2437,
+  "aligned": 2429,
+  "reused_existing": 0,
+  "failed": 8,
+  "failed_by_split": {
+    "train": 8
+  },
+  "failures": [
+    {
+      "basename": "te_05457_00",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_03824_01",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_08564_00",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_08569_00",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_03894_01",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_03649_00",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_03824_02",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    },
+    {
+      "basename": "te_03650_00",
+      "split": "train",
+      "error": "tokenizer produced <unk>"
+    }
+  ]
+}

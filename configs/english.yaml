@@ -1,0 +1,121 @@
+# English FastSpeech 2 on a ~5 h / ~1 h subset of ai4bharat/Svarah.
+# The three ming024 yaml files are generated from this config at train time.
+# Assignment entrypoint: English/config.yaml (symlink).
+
+language: en
+language_name: english
+dataset: Svarah
+hf_dataset: ai4bharat/Svarah
+hf_config: default
+hf_split: test
+gated: true
+
+subset:
+  train_hours: 5.0
+  val_hours: 1.0
+  # Drop clips that are too short to carry a stable F0 or too long for a T4 batch.
+  min_utt_sec: 1.0
+  max_utt_sec: 12.0
+  # Svarah has no speaker_id column. Speakers are proxied by the demographic
+  # tuple; anyone under 30 s is dropped so the speaker embedding is not one-shot.
+  min_speaker_sec: 30.0
+  seed: 42
+
+text:
+  representation: arpabet
+  text_cleaners: ["english_cleaners"]
+  # Test sentences only. Training labs are whitespace-collapsed.
+  preserve_repeated_spaces: true
+
+align:
+  # ctc fits a Kaggle session. mfa uses Montreal Forced Aligner + english_us_arpa.
+  default: ctc
+  ctc_model: facebook/wav2vec2-base-960h
+  ctc_lang: null
+  mfa_acoustic_model: english_us_arpa
+  mfa_dictionary: third_party/FastSpeech2/lexicon/librispeech-lexicon.txt
+  max_skip_fraction: 0.35
+
+audio:
+  # Universal HiFi-GAN shipped with ming024 is 22050 Hz, hop 256, mel fmax 8000.
+  # Svarah's native rate is recorded in split_stats.json and resampled here.
+  sampling_rate: 22050
+  max_wav_value: 32768.0
+  filter_length: 1024
+  hop_length: 256
+  win_length: 1024
+  n_mel_channels: 80
+  mel_fmin: 0
+  mel_fmax: 8000
+
+pitch:
+  feature: phoneme_level
+  normalization: true
+energy:
+  feature: phoneme_level
+  normalization: true
+
+# Same small FastSpeech 2 as ming024's LJSpeech config, with a speaker table
+# because this subset is multi-speaker. Vocoder is the universal HiFi-GAN,
+# not the LJSpeech one.
+model:
+  transformer:
+    encoder_layer: 4
+    encoder_head: 2
+    encoder_hidden: 256
+    decoder_layer: 6
+    decoder_head: 2
+    decoder_hidden: 256
+    conv_filter_size: 1024
+    conv_kernel_size: [9, 1]
+    encoder_dropout: 0.2
+    decoder_dropout: 0.2
+  variance_predictor:
+    filter_size: 256
+    kernel_size: 3
+    dropout: 0.5
+  variance_embedding:
+    pitch_quantization: linear
+    energy_quantization: linear
+    n_bins: 256
+  multi_speaker: true
+  max_seq_len: 1500
+  vocoder:
+    model: HiFi-GAN
+    speaker: universal
+
+optimizer:
+  # T4 16 GB. If this OOMs, set batch_size: 8 and grad_acc_step: 2.
+  batch_size: 16
+  betas: [0.9, 0.98]
+  eps: 0.000000001
+  weight_decay: 0.0
+  grad_clip_thresh: 1.0
+  grad_acc_step: 1
+  warm_up_step: 1000
+  anneal_steps: [12000, 16000]
+  anneal_rate: 0.5
+  group_size: 4
+
+step:
+  # ming024 uses 900k steps for LJSpeech. 20k is the budget for one T4 session
+  # on ~5 h, with a checkpoint every 2k steps so a killed session can resume.
+  # The Noam schedule still uses d_model ** -0.5 as the base learning rate.
+  total_step: 20000
+  log_step: 50
+  synth_step: 1000
+  val_step: 500
+  save_step: 2000
+
+paths:
+  raw: raw_data/english
+  preprocessed: preprocessed_data/english
+  ckpt: English/checkpoints
+  log: output/log/english
+  result: Results/English
+  manifest: data/english/manifest.jsonl
+  lexicon: third_party/FastSpeech2/lexicon/librispeech-lexicon.txt
+
+inference:
+  # null -> speaker with the most training audio in split_stats.json
+  speaker_id: null

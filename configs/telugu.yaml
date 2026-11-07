@@ -1,0 +1,114 @@
+# Telugu FastSpeech 2 on a ~5 h / ~1 h subset of SPRINGLab/IndicTTS_Telugu.
+# Neither studio speaker has 5 hours alone (female ~4.27 h, male ~4.47 h),
+# so this config trains one multi-speaker model on both.
+
+language: te
+language_name: telugu
+dataset: IndicTTS_Telugu
+hf_dataset: SPRINGLab/IndicTTS_Telugu
+hf_config: default
+hf_split: train
+gated: false
+
+subset:
+  train_hours: 5.0
+  val_hours: 1.0
+  min_utt_sec: 1.0
+  # Training-slice cap, not a hard drop of the source clip. IndicTTS female
+  # takes are often 20–80 s paragraphs; download_indictts.py splits those on
+  # syllable boundaries so this cap still fits a T4 batch. Slices whose text
+  # is longer than the CTC frame budget are dropped. Actual hours are written
+  # to data/telugu/split_stats.json and may be under 5 h / 1 h.
+  max_utt_sec: 12.0
+  min_speaker_sec: 30.0
+  seed: 42
+
+text:
+  # Orthographic syllables. ming024 has English and Mandarin frontends only.
+  representation: grapheme
+  text_cleaners: ["basic_cleaners"]
+  preserve_repeated_spaces: true
+
+align:
+  default: ctc
+  # FLORES-102 MMS checkpoint. Adapter language code is "tel".
+  ctc_model: facebook/mms-1b-fl102
+  ctc_lang: tel
+  mfa_acoustic_model: null
+  mfa_dictionary: null
+  max_skip_fraction: 0.35
+
+audio:
+  # Source files are 48 kHz studio WAV. Resampled to 22050 Hz for HiFi-GAN.
+  sampling_rate: 22050
+  max_wav_value: 32768.0
+  filter_length: 1024
+  hop_length: 256
+  win_length: 1024
+  n_mel_channels: 80
+  mel_fmin: 0
+  mel_fmax: 8000
+
+pitch:
+  feature: phoneme_level
+  normalization: true
+energy:
+  feature: phoneme_level
+  normalization: true
+
+model:
+  transformer:
+    encoder_layer: 4
+    encoder_head: 2
+    encoder_hidden: 256
+    decoder_layer: 6
+    decoder_head: 2
+    decoder_hidden: 256
+    conv_filter_size: 1024
+    conv_kernel_size: [9, 1]
+    encoder_dropout: 0.2
+    decoder_dropout: 0.2
+  variance_predictor:
+    filter_size: 256
+    kernel_size: 3
+    dropout: 0.5
+  variance_embedding:
+    pitch_quantization: linear
+    energy_quantization: linear
+    n_bins: 256
+  multi_speaker: true
+  max_seq_len: 1500
+  vocoder:
+    model: HiFi-GAN
+    speaker: universal
+
+optimizer:
+  batch_size: 16
+  betas: [0.9, 0.98]
+  eps: 0.000000001
+  weight_decay: 0.0
+  grad_clip_thresh: 1.0
+  grad_acc_step: 1
+  warm_up_step: 1000
+  anneal_steps: [12000, 16000]
+  anneal_rate: 0.5
+  group_size: 4
+
+step:
+  total_step: 20000
+  log_step: 50
+  synth_step: 1000
+  val_step: 500
+  save_step: 2000
+
+paths:
+  raw: raw_data/telugu
+  preprocessed: preprocessed_data/telugu
+  ckpt: Telugu/checkpoints
+  log: output/log/telugu
+  result: Results/Telugu
+  manifest: data/telugu/manifest.jsonl
+  lexicon: third_party/FastSpeech2/lexicon/librispeech-lexicon.txt
+
+inference:
+  speaker_id: null

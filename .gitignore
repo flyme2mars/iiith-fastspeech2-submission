@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+
+# Corpus audio, alignments, and intermediate features. Do not commit these.
+/raw_data/
+/preprocessed_data/
+/data/english/
+/data/telugu/
+/output/
+
+# Model and vocoder weights. GitHub's file limit is 100 MB.
+# After training, either use Git LFS or put a download link in the README.
+*.pth
+*.pth.tar
+*.ckpt
+*.npz
+third_party/FastSpeech2/hifigan/*.zip
+
+# Local clutter
+.DS_Store
+*.egg-info/
+.pytest_cache/

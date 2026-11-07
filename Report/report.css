@@ -1,0 +1,41 @@
+body {
+  font-family: "Noto Sans", "Noto Sans Telugu", sans-serif;
+  font-size: 11pt;
+  line-height: 1.35;
+  color: #1a1a1a;
+}
+
+code, pre, tt {
+  font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+  font-size: 8.5pt;
+}
+
+.te {
+  font-family: "Noto Sans Telugu", sans-serif;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  page-break-inside: avoid;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+  vertical-align: top;
+}
